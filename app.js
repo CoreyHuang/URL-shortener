@@ -4,8 +4,6 @@ const db = mongoose.connection
 db.on('error', () => { console.log('mongodb error!!!') })
 db.once('open', () => { console.log('mongodb connected~') })
 
-
-
 const express = require('express')
 const app = express()
 const exphbs = require('express-handlebars')
@@ -13,12 +11,21 @@ const post = 3000
 const bodyParser = require('body-parser')
 const urlShortener = require('./models/urlShortener.js')
 
-
-
 app.engine('handlebars', exphbs({ defaultLayout: "main" }))
 app.set('view engine', 'handlebars')
 
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use((req, res, next) => {
+  urlShortener.find().lean()
+  .then(dbData => {
+    const checkStatus = dbData.find(data => data.shortenerURL === ("http://localhost:3000" + req.url) )
+    // console.log("checkStatus", checkStatus)
+    if (checkStatus) res.redirect(checkStatus.userURL)
+    else next()
+  }) 
+})
+
 
 app.get('/', (req, res) => {
   res.render('index')
@@ -30,20 +37,16 @@ app.post('/', (req, res) => {
   urlShortener.find()
     .then(dbData => {
       let findData = dbData.find(data => data.userURL === req.body.userURL)
-      // console.log("findData", findData)
       if (!findData) {
         resURL = getRandomString(dbData)
-        // console.log("resURL", resURL)
         urlShortener.create({ userURL: req.body.userURL, shortenerURL: resURL })
       }
       else {
         resURL = findData.shortenerURL
-        // console.log("resURL", resURL)
       }
     })
     .then(() => { res.render('shortenURL', { resURL }) })
     .catch(error => console.log(error))
-  // res.render('shortenURL', {})
 })
 
 
