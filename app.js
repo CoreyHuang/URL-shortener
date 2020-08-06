@@ -23,20 +23,22 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use((req, res, next) => {
   urlShortener.find().lean()
     .then(dbData => {
-      const checkStatus = dbData.find(data => data.shortenerURL === (returnURL + req.url))//-------
+      //傳來的網址中，如果資料庫有短網址，就直接導傳新網址
+      const checkStatus = dbData.find(data => data.shortenerURL === (returnURL + req.url))
       if (checkStatus) res.redirect(checkStatus.userURL)
       else next()
     })
 })
 
 app.get('/', (req, res) => {
-  res.render('index', {test : "awfgerwger"})
+  res.render('index')
 })
 
 app.post('/', (req, res) => {
   let resURL = ""
   urlShortener.find()
     .then(dbData => {
+      //預防輸入的網址有重複
       let findData = dbData.find(data => data.userURL === req.body.userURL)
       if (!findData) {
         resURL = getRandomString(dbData)
@@ -66,7 +68,7 @@ function getRandomString(dbData) {
     randomWord += mix[Math.floor(Math.random() * mix.length)]
   randomWord = returnURL +"/" + randomWord
   console.log("getRandomString()", randomWord)
-
+  //預防隨機產生的短網址有重複
   if (dbData.find(data => data.shortenerURL === randomWord))
     return getRandomString(dbData)
   else
