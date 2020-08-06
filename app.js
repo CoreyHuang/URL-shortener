@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/urlShortener', { useNewUrlParser: true, useUnifiedTopology: true })
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/urlShortener'
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
 db.on('error', () => { console.log('mongodb error!!!') })
 db.once('open', () => { console.log('mongodb connected~') })
@@ -7,7 +8,7 @@ db.once('open', () => { console.log('mongodb connected~') })
 const express = require('express')
 const app = express()
 const exphbs = require('express-handlebars')
-const post = 3000
+const post = process.env.PORT || 3000
 const bodyParser = require('body-parser')
 const urlShortener = require('./models/urlShortener.js')
 
