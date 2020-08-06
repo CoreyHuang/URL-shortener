@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/urlShortener'
+const returnURL = process.env.MONGODB_URI ? "https://vast-retreat-37768.herokuapp.com/" : "http://localhost:3000"
+console.log("returnURL", returnURL)
+
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
 db.on('error', () => { console.log('mongodb error!!!') })
@@ -20,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use((req, res, next) => {
   urlShortener.find().lean()
     .then(dbData => {
-      const checkStatus = dbData.find(data => data.shortenerURL === ("http://localhost:3000" + req.url))
+      const checkStatus = dbData.find(data => data.shortenerURL === (returnURL + req.url))//-------
       if (checkStatus) res.redirect(checkStatus.userURL)
       else next()
     })
@@ -60,7 +63,7 @@ function getRandomString(dbData) {
 
   for (let i = 0; i < 5; i++)
     randomWord += mix[Math.floor(Math.random() * mix.length)]
-  randomWord = "http://localhost:3000/" + randomWord
+  randomWord = returnURL +"/" + randomWord
 
   if (dbData.find(data => data.shortenerURL === randomWord))
     return getRandomString(dbData)
