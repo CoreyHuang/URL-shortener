@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/urlShortener'
-const returnURL = process.env.MONGODB_URI ? "https://vast-retreat-37768.herokuapp.com/" : "http://localhost:3000"
+const returnURL = process.env.MONGODB_URI ? "https://vast-retreat-37768.herokuapp.com" : "http://localhost:3000"
 console.log("returnURL", returnURL)
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -40,6 +40,7 @@ app.post('/', (req, res) => {
       let findData = dbData.find(data => data.userURL === req.body.userURL)
       if (!findData) {
         resURL = getRandomString(dbData)
+        console.log("app.post", resURL)
         urlShortener.create({ userURL: req.body.userURL, shortenerURL: resURL })
       }
       else {
@@ -64,6 +65,7 @@ function getRandomString(dbData) {
   for (let i = 0; i < 5; i++)
     randomWord += mix[Math.floor(Math.random() * mix.length)]
   randomWord = returnURL +"/" + randomWord
+  console.log("getRandomString()", randomWord)
 
   if (dbData.find(data => data.shortenerURL === randomWord))
     return getRandomString(dbData)
