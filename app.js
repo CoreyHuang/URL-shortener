@@ -18,21 +18,18 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use((req, res, next) => {
   urlShortener.find().lean()
-  .then(dbData => {
-    const checkStatus = dbData.find(data => data.shortenerURL === ("http://localhost:3000" + req.url) )
-    // console.log("checkStatus", checkStatus)
-    if (checkStatus) res.redirect(checkStatus.userURL)
-    else next()
-  }) 
+    .then(dbData => {
+      const checkStatus = dbData.find(data => data.shortenerURL === ("http://localhost:3000" + req.url))
+      if (checkStatus) res.redirect(checkStatus.userURL)
+      else next()
+    })
 })
 
-
 app.get('/', (req, res) => {
-  res.render('index')
+  res.render('index', {test : "awfgerwger"})
 })
 
 app.post('/', (req, res) => {
-  // console.log(req.body)
   let resURL = ""
   urlShortener.find()
     .then(dbData => {
@@ -49,12 +46,9 @@ app.post('/', (req, res) => {
     .catch(error => console.log(error))
 })
 
-
-
 app.listen(post, () => {
   console.log('Server is enable...')
 })
-
 
 function getRandomString(dbData) {
   const upWord = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('')
@@ -73,3 +67,48 @@ function getRandomString(dbData) {
     return randomWord
 }
 
+
+// for copy function ， only test
+//===================================================================
+// let jsdom = require('jsdom').JSDOM,
+
+//   uri = './views/index.handlebars',
+//   options = {
+//     runScripts: 'dangerously',
+//     resources: "usable"
+//   };
+
+// jsdom.fromFile(uri, options).then(function (dom) {
+//   let window = dom.window,
+//     document = window.document;
+//   console.log(document.querySelectorAll('body')[0].innerHTML);
+// }).catch(function (e) { console.log(e); });
+
+
+
+// let jsdom = require('jsdom').JSDOM
+  // uri = './views/index.handlebars',
+  // options = {
+  //   // url: "http://localhost:3000/",
+  //   runScripts: 'dangerously',
+  //   resources: "usable"
+  // };
+
+// const jsdom = require("jsdom");
+// const { JSDOM } = jsdom;
+
+//   let x
+//   jsdom.fromFile(uri, options).then(function (dom) {
+//   let window = dom.window,
+//     document = window.document;
+//   console.log(x = document.querySelector('body').innerHTML);
+// }).catch(function (e) { console.log(e); });
+
+  // const dom = new JSDOM(``, {
+  //   url: "http://localhost:3000/",
+  //   referrer: "http://localhost:3000/",
+  //   contentType: "text/html",
+  //   includeNodeLocations: true,
+  //   storageQuota: 10000000
+  // });
+  // console.log("test", dom.window.document.querySelector('body').innerHTML)
