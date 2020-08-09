@@ -20,6 +20,8 @@ app.set('view engine', 'handlebars')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
+app.use(express.static('public'))
+
 app.use((req, res, next) => {
   urlShortener.find().lean()
     .then(dbData => {

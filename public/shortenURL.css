@@ -1,0 +1,14 @@
+.copyShortenURL {
+  background:none;
+  outline:none;
+  border:0px;
+  text-decoration: none;
+  color: #007bff;
+  background-color: transparent;
+}
+
+.copyShortenURL:hover {
+  text-decoration: underline;
+  color: #0056b3;
+  cursor: pointer;
+}
